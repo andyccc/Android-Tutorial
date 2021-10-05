@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SharedPrefernce</string>
+    <string name="my_data">my_data</string>
+    <string name="my_data_number">number</string>
+
+
+</resources>
