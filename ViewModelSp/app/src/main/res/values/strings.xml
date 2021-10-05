@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ViewModelSp</string>
+    <string name="jia">+</string>
+    <string name="jian">-</string>
+    <string name="data_key">data_key</string>
+    <string name="my_sp_name">my_sp</string>
+</resources>
