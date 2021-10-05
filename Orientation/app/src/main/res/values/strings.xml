@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Orientation</string>
+    <string name="btn1">按钮1</string>
+    <string name="btn2">按钮2</string>
+    <string name="btn3">按钮3</string>
+    <string name="btn4">按钮4</string>
+    <string name="btn5">按钮5</string>
+    <string name="btn6">按钮6</string>
+
+    <string name="title">欢迎</string>
+</resources>
