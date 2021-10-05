@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../../../layout/custom_preview.xml" value="0.12083333333333333" />
+        <entry key="app/src/main/res/drawable/ic_baseline_sentiment_satisfied_alt_24.xml" value="0.23333333333333334" />
+        <entry key="app/src/main/res/drawable/ic_baseline_sentiment_very_dissatisfied_24.xml" value="0.23333333333333334" />
+        <entry key="app/src/main/res/layout-land/fragment_lose.xml" value="0.18697916666666667" />
+        <entry key="app/src/main/res/layout-land/fragment_question.xml" value="0.2383402752141916" />
+        <entry key="app/src/main/res/layout-land/fragment_title.xml" value="0.2" />
+        <entry key="app/src/main/res/layout-land/fragment_win.xml" value="0.18697916666666667" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.17222222222222222" />
+        <entry key="app/src/main/res/layout/fragment_lose.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/fragment_question.xml" value="0.22239583333333332" />
+        <entry key="app/src/main/res/layout/fragment_title.xml" value="0.320695102685624" />
+        <entry key="app/src/main/res/layout/fragment_win.xml" value="0.2171875" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8 (2)" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

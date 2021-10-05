@@ -1,0 +1,133 @@
+package com.example.calculationtest;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.SavedStateViewModelFactory;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.example.calculationtest.databinding.FragmentQuestionBinding;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link QuestionFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class QuestionFragment extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public QuestionFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment QuestionFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static QuestionFragment newInstance(String param1, String param2) {
+        QuestionFragment fragment = new QuestionFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+//        return inflater.inflate(R.layout.fragment_question, container, false);
+        MyViewModel myViewModel = new ViewModelProvider(requireActivity(), new SavedStateViewModelFactory(requireActivity().getApplication(), requireActivity())).get(MyViewModel.class);
+        myViewModel.generator();
+        myViewModel.getCurrentScore().setValue(0);
+
+        FragmentQuestionBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_question, container, false);
+        binding.setData(myViewModel);
+        binding.setLifecycleOwner(requireActivity());
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.buttonClear) {
+                    stringBuilder.setLength(0);
+                    binding.textView9.setText(getString(R.string.input_indicator));
+                } else if (v.getId() == R.id.buttonSubmit) {
+                    if (stringBuilder.length() == 0) {
+                        return;
+                    }
+
+                    if (Integer.valueOf(stringBuilder.toString()).intValue() == myViewModel.getAnswer().getValue().intValue()) {
+                        myViewModel.answerCorrect();
+                        stringBuilder.setLength(0);
+                        binding.textView9.setText(R.string.answer_correct_message);
+//                    stringBuilder.append(getString(R.string.answer_correct_message));
+                    } else {
+                        NavController nav = Navigation.findNavController(v);
+                        if (myViewModel.winflag) {
+                            nav.navigate(R.id.action_questionFragment_to_winFragment);
+                            myViewModel.winflag = false;
+                            myViewModel.save();
+                        } else {
+                            nav.navigate(R.id.action_questionFragment_to_loseFragment);
+                        }
+                    }
+                } else {
+                    Button btn = (Button) v;
+                    String str = btn.getText().toString();
+                    stringBuilder.append(str);
+                    binding.textView9.setText(stringBuilder.toString());
+                }
+            }
+        };
+
+        binding.button0.setOnClickListener(listener);
+        binding.button1.setOnClickListener(listener);
+        binding.button2.setOnClickListener(listener);
+        binding.button3.setOnClickListener(listener);
+        binding.button4.setOnClickListener(listener);
+        binding.button5.setOnClickListener(listener);
+        binding.button6.setOnClickListener(listener);
+        binding.button7.setOnClickListener(listener);
+        binding.button8.setOnClickListener(listener);
+        binding.button9.setOnClickListener(listener);
+        binding.buttonClear.setOnClickListener(listener);
+        binding.buttonSubmit.setOnClickListener(listener);
+
+        return binding.getRoot();
+    }
+}
