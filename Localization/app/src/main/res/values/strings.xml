@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Localization</string>
+    <string name="textview1">Wellcome</string>
+    <string name="textview2">this is a message</string>
+    <string name="btn1">button</string>
+
+</resources>

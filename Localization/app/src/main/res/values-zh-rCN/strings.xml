@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">本地化</string>
+    <string name="textview1">欢迎</string>
+    <string name="textview2">这个是个消息</string>
+    <string name="btn1">按钮</string>
+</resources>
