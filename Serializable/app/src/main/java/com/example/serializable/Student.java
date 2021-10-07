@@ -5,9 +5,16 @@ import java.io.Serializable;
 
 public class Student implements Serializable {
 
+    // 如果不设置serialVersionUID字段，类的结构发生改变是，对象读取则会报错
+    /*
+        java.io.InvalidClassException: com.example.serializable.Student; local class incompatible: stream classdesc serialVersionUID = -8449296755745138964, local class serialVersionUID = 3231324503065474954
+
+    * */
+    private static final long serialVersionUID = 3231324503065474954L;
     private String name;
     private int age;
     private Score score;
+    int foo;
 
     public Student(String name, int age, Score score) {
         this.name = name;
@@ -41,6 +48,7 @@ public class Student implements Serializable {
 }
 
 class Score implements  Serializable{
+    private static final long serialVersionUID = 890150913833791039L;
     private int math;
     private int english;
     private int chinese;
