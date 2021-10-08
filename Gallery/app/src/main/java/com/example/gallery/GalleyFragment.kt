@@ -5,6 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import kotlinx.android.synthetic.main.fragment_galley.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,5 +59,21 @@ class GalleyFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        val galleryAdapter = GalleryAdapter()
+        recyclyerView.apply {
+            adapter = galleryAdapter
+            layoutManager = GridLayoutManager(requireContext(), 2)
+        }
+        val galleryViewModel = ViewModelProvider(this).get(GalleyViewModel::class.java)
+        galleryViewModel.photoListLive.observe(viewLifecycleOwner, Observer {
+            galleryAdapter.submitList(it)
+        })
+
+        galleryViewModel.photoListLive.value?: galleryViewModel.fectchData()
     }
 }

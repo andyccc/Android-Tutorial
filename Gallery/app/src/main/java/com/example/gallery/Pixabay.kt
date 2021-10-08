@@ -1,5 +1,5 @@
 package com.example.gallery
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
 data class Pixabay(
     val totalHits: Int,
@@ -28,7 +28,10 @@ data class Pixabay(
 }
 
 data class PhotoItem(
-    @SerializedName("webformatURL") val previewUrl: String,
-    val id: Int,
-    val largeImageURL: String
+    @SerializedName("webformatURL")
+    val previewUrl: String,
+    @SerializedName("id")
+    val photoId: Int,
+    @SerializedName("largeImageURL")
+    val fullUrl: String
 )

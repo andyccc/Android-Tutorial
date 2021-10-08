@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-android-extensions'
+
 }
 
 android {
@@ -48,7 +50,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc03'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.2.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.1.0'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.8.8'
     implementation 'io.supercharge:shimmerlayout:2.1.0'
     implementation 'com.github.chrisbanes.photoview:library:1.2.4'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
