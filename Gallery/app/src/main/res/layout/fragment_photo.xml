@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<io.supercharge.shimmerlayout.ShimmerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shimmer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PhotoFragment">
+    tools:context=".PhotoFragment" >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <uk.co.senab.photoview.PhotoView
+        android:id="@+id/photoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
+        tools:src="@tools:sample/avatars" />
+</io.supercharge.shimmerlayout.ShimmerLayout>

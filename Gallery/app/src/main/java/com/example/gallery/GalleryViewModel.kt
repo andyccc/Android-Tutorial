@@ -10,7 +10,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.gson.Gson
 
-class GalleyViewModel(application: Application) : AndroidViewModel(application) {
+class GalleryViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _photoListLive = MutableLiveData<List<PhotoItem>>()
     val photoListLive : LiveData<List<PhotoItem>>
@@ -32,7 +32,7 @@ class GalleyViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun getUrl(): String {
-        val url = "https://pixabay.com/api/?key=23746904-f6213ab4af145089d76127203&image_type=photo&pretty=true&q=${keyWords.random()}"
+        val url = "https://pixabay.com/api/?key=23746904-f6213ab4af145089d76127203&image_type=photo&pretty=true&q=${keyWords.random()}&per_page=100"
         return url
     }
 

@@ -1,9 +1,11 @@
 package com.example.gallery
 
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +23,10 @@ class GalleryAdapter : ListAdapter<PhotoItem, MyViewHolder>(DIFFCALLBACk) {
             LayoutInflater.from(parent.context).inflate(R.layout.gallery_cell, parent, false)
         )
         holder.itemView.setOnClickListener {
+            Bundle().apply {
+                putParcelable("PHOTO", getItem(holder.adapterPosition))
+                holder.itemView.findNavController().navigate(R.id.action_galleyFragment_to_photoFragment, this);
+            }
 
         }
         return holder
@@ -33,7 +39,7 @@ class GalleryAdapter : ListAdapter<PhotoItem, MyViewHolder>(DIFFCALLBACk) {
             startShimmerAnimation()
         }
 
-        Glide.with(holder.itemView).load(getItem(position))
+        Glide.with(holder.itemView).load(getItem(position).previewUrl)
             .placeholder(R.drawable.ic_gray_photo_24)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(

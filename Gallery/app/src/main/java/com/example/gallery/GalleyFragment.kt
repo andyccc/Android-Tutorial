@@ -1,11 +1,11 @@
 package com.example.gallery
 
 import android.os.Bundle
+import android.os.Handler
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.fragment_galley.*
@@ -24,6 +24,7 @@ class GalleyFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private  lateinit var galleryViewModel: GalleryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,19 +62,52 @@ class GalleyFragment : Fragment() {
             }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater.inflate(R.menu.menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.swipeIndicator -> {
+                swipeRefresh.isRefreshing = true
+                Handler().postDelayed(Runnable {
+                    galleryViewModel.fectchData()
+                }, 1000)
+            }
+
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setHasOptionsMenu(true)
 
         val galleryAdapter = GalleryAdapter()
         recyclyerView.apply {
             adapter = galleryAdapter
             layoutManager = GridLayoutManager(requireContext(), 2)
         }
-        val galleryViewModel = ViewModelProvider(this).get(GalleyViewModel::class.java)
+
+        galleryViewModel = ViewModelProvider(
+            this,
+            SavedStateViewModelFactory(requireActivity().application, requireActivity())
+        ).get(GalleryViewModel::class.java)
         galleryViewModel.photoListLive.observe(viewLifecycleOwner, Observer {
             galleryAdapter.submitList(it)
+            swipeRefresh.isRefreshing = false
         })
 
-        galleryViewModel.photoListLive.value?: galleryViewModel.fectchData()
+        galleryViewModel.photoListLive.value ?: galleryViewModel.fectchData()
+
+        swipeRefresh.setOnRefreshListener {
+            galleryViewModel.fectchData()
+        }
+
+
     }
+
 }
