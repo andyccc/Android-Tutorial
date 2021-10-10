@@ -4,11 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/photo_placeholder.xml" value="0.20833333333333334" />
+        <entry key="app/src/main/res/drawable/save_button_image.xml" value="0.1046875" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_galley.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/fragment_pager_photo.xml" value="0.1921875" />
+        <entry key="app/src/main/res/layout/fragment_pager_photo.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_photo.xml" value="0.17" />
-        <entry key="app/src/main/res/layout/gallery_cell.xml" value="0.1921875" />
+        <entry key="app/src/main/res/layout/gallery_cell.xml" value="0.5" />
         <entry key="app/src/main/res/layout/pager_photo_view.xml" value="0.1921875" />
         <entry key="app/src/main/res/menu/menu.xml" value="0.10520833333333333" />
       </map>

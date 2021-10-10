@@ -30,17 +30,33 @@ class GalleryAdapter : ListAdapter<PhotoItem, MyViewHolder>(DIFFCALLBACk) {
             }
 
         }
+
+//        holder.itemView.setOnLongClickListener {
+//
+//        }
+
         return holder
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.itemView.shimmer.apply {
-            setShimmerColor(0x55FFFFFF)
-            setShimmerAngle(0)
-            startShimmerAnimation()
+        val photoItem = getItem(position)
+        with(holder.itemView) {
+            shimmer.apply {
+                setShimmerColor(0x55FFFFFF)
+                setShimmerAngle(0)
+                startShimmerAnimation()
+            }
+
+            textViewUser.text = photoItem.photoUser
+            textViewLike.text = photoItem.photoLikes.toString()
+            textViewFavourite.text = photoItem.photoFavorites.toString()
+
+            imageView.layoutParams.height = photoItem.photoHeight
         }
 
-        Glide.with(holder.itemView).load(getItem(position).previewUrl)
+
+
+        Glide.with(holder.itemView).load(photoItem.previewUrl)
             .placeholder(R.drawable.photo_placeholder)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(

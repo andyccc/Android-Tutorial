@@ -32,7 +32,13 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize data class PhotoItem(
     @SerializedName("webformatURL") val previewUrl: String,
     @SerializedName("id") val photoId: Int,
-    @SerializedName("largeImageURL") val fullUrl: String
+    @SerializedName("largeImageURL") val fullUrl: String,
+    @SerializedName("webformatHeight") val photoHeight: Int,
+    @SerializedName("user") val photoUser: String,
+    @SerializedName("likes") val photoLikes: Int,
+    @SerializedName("collections") val photoFavorites: Int
+
+
 
 //    val webformatURL: String,
 //    val id: Int,
