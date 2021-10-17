@@ -16,13 +16,16 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.gallery_cell.view.*
+import kotlinx.android.synthetic.main.gallery_footer.view.*
 
-class GalleryAdapter : ListAdapter<PhotoItem, MyViewHolder>(DIFFCALLBACk) {
+class GalleryAdapter(val galleryViewModel: GalleryViewModel) : ListAdapter<PhotoItem, MyViewHolder>(DIFFCALLBACk) {
 
     companion object {
         const val NORMAL_VIEW_TYPE = 0
         const val FOOTER_VIEW_TYPE = 1
     }
+
+    var footerViewStatus = DATA_STATUS_CAN_LOAD_MORE
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val holder: MyViewHolder
@@ -44,8 +47,14 @@ class GalleryAdapter : ListAdapter<PhotoItem, MyViewHolder>(DIFFCALLBACk) {
                 LayoutInflater.from(parent.context).inflate(R.layout.gallery_footer, parent, false)
                     .also {
                         (it.layoutParams as StaggeredGridLayoutManager.LayoutParams).isFullSpan = true
+                        it.setOnClickListener{itemView ->
+                            itemView.progressBar.visibility = View.VISIBLE
+                            itemView.textView.text = "正在加载"
+                            galleryViewModel.fectchData()
+                        }
                     }
             )
+
         }
 
 //        holder.itemView.setOnLongClickListener {
@@ -68,6 +77,27 @@ class GalleryAdapter : ListAdapter<PhotoItem, MyViewHolder>(DIFFCALLBACk) {
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         if (position == itemCount - 1) {
             // 这个是footer
+            with(holder.itemView) {
+                when(footerViewStatus) {
+                    DATA_STATUS_CAN_LOAD_MORE -> {
+                        progressBar.visibility = View.VISIBLE
+                        textView.text = "正在加载"
+                        isClickable = false
+                    }
+                    DATA_STATUS_NO_MORE -> {
+                        progressBar.visibility = View.GONE
+                        textView.text = "全部加载完毕"
+                        isClickable = false
+                    }
+                    DATA_STATUS_NETWORK_ERROR -> {
+                        progressBar.visibility = View.GONE
+                        textView.text = "网络故障，点击重试"
+                        isClickable = true
+                    }
+                }
+            }
+
+
             return
         }
 

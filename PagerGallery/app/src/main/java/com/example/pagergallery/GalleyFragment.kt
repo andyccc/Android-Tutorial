@@ -2,12 +2,14 @@ package com.example.pagergallery
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.android.synthetic.main.fragment_galley.*
 
@@ -74,7 +76,7 @@ class GalleyFragment : Fragment() {
             R.id.swipeIndicator -> {
                 swipeRefresh.isRefreshing = true
                 Handler().postDelayed(Runnable {
-                    galleryViewModel.fectchData()
+                    galleryViewModel.resetQuery()
                 }, 1000)
             }
 
@@ -87,27 +89,65 @@ class GalleyFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
 
-        val galleryAdapter = GalleryAdapter()
+        galleryViewModel = ViewModelProvider(
+            this,
+            SavedStateViewModelFactory(requireActivity().application, requireActivity())
+        ).get(GalleryViewModel::class.java)
+
+        val galleryAdapter = GalleryAdapter(galleryViewModel)
+
         recyclyerView.apply {
             adapter = galleryAdapter
 //            layoutManager = GridLayoutManager(requireContext(), 2)
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
 
-        galleryViewModel = ViewModelProvider(
-            this,
-            SavedStateViewModelFactory(requireActivity().application, requireActivity())
-        ).get(GalleryViewModel::class.java)
+
         galleryViewModel.photoListLive.observe(viewLifecycleOwner, Observer {
+            if (galleryViewModel.needToScrollToTop) {
+                recyclyerView.scrollToPosition(0)
+                galleryViewModel.needToScrollToTop = false
+            }
+
             galleryAdapter.submitList(it)
             swipeRefresh.isRefreshing = false
         })
 
-        galleryViewModel.photoListLive.value ?: galleryViewModel.fectchData()
+//        galleryViewModel.photoListLive.value ?: galleryViewModel.resetQuery()
+
+        galleryViewModel.dataStatusLive.observe(viewLifecycleOwner, {
+            galleryAdapter.footerViewStatus = it
+            galleryAdapter.notifyItemChanged(galleryAdapter.itemCount - 1)
+            if (it == DATA_STATUS_NETWORK_ERROR) swipeRefresh.isRefreshing = false
+        })
 
         swipeRefresh.setOnRefreshListener {
-            galleryViewModel.fectchData()
+            galleryViewModel.resetQuery()
         }
+
+        recyclyerView.addOnScrollListener(object :RecyclerView.OnScrollListener() {
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//                Log.d("mytag", "onScrollStateChanged: "+ newState)
+//                // newState
+//                // 0 停止滚动
+//                // 1 开始滚动
+//                // 2 快速滚动
+//            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                Log.d("mytag", "onScrolled: "+ dx + "," + dy)
+                if (dy < 0) return
+
+                val layoutManager : StaggeredGridLayoutManager = recyclerView.layoutManager as StaggeredGridLayoutManager
+                val intArray = IntArray(2)
+                layoutManager.findLastVisibleItemPositions(intArray)
+                if (intArray[0] == galleryAdapter.itemCount - 1) {
+                    galleryViewModel.fectchData()
+                }
+            }
+        })
 
 
     }
