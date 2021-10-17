@@ -74,7 +74,13 @@ class PixabayDataSource(private val  context: Context): PageKeyedDataSource<Int,
                 callback.onResult(dataList, params.key + 1)
             },
             Response.ErrorListener {
-                retry = {loadAfter(params, callback)}
+                if (it.toString() == "loadAfter: com.android.volley.ClientError") {
+                    _networkStatus.postValue(NetworkStatus.COMPLETED)
+                } else {
+                    retry = {loadAfter(params, callback)}
+                    _networkStatus.postValue(NetworkStatus.FAILED)
+                }
+
                 Log.d("errtag1", "loadInitial: $it")
             }
         ).also {
