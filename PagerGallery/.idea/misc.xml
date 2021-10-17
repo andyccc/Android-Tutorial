@@ -10,6 +10,7 @@
         <entry key="app/src/main/res/layout/fragment_pager_photo.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_photo.xml" value="0.17" />
         <entry key="app/src/main/res/layout/gallery_cell.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/gallery_footer.xml" value="1.0" />
         <entry key="app/src/main/res/layout/pager_photo_view.xml" value="0.1921875" />
         <entry key="app/src/main/res/menu/menu.xml" value="0.10520833333333333" />
       </map>
