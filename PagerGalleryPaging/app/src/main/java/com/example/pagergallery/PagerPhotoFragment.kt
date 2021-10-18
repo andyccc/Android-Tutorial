@@ -17,7 +17,9 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.get
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -45,6 +47,8 @@ class PagerPhotoFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    val galleryViewModel by activityViewModels<GalleryViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,24 +89,25 @@ class PagerPhotoFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val photList: ArrayList<PhotoItem>? =
-            arguments?.getParcelableArrayList<PhotoItem>("PHOTO_LIST")
+        val adapter = PagerPhotoListAdapter()
+        viewPager2.adapter = adapter
+        galleryViewModel.pagedListLiveData.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it)
+            viewPager2.setCurrentItem(arguments?.getInt("PHOTO_POSITION") ?: 0, false)
 
-        PagerPhotoListAdapter().apply {
-            viewPager2.adapter = this
-            submitList(photList)
-        }
+        })
+
+
 
         viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                photoTag.text = getString(R.string.photo_tag, position + 1, photList?.size)
+                photoTag.text = getString(R.string.photo_tag, position + 1, galleryViewModel.pagedListLiveData.value?.size)
 
             }
         })
         // 垂直滚动
         viewPager2.orientation = ViewPager2.ORIENTATION_VERTICAL
-        viewPager2.setCurrentItem(arguments?.getInt("PHOTO_POSITION") ?: 0, false)
         saveButton.setOnClickListener {
             if (VERSION.SDK_INT < 29 && ContextCompat.checkSelfPermission(
                     requireContext(),

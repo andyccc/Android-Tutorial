@@ -12,7 +12,9 @@ import com.android.volley.toolbox.StringRequest
 import com.google.gson.Gson
 
 enum class NetworkStatus {
+    INITIAL_LOADING,
     LOADING,
+    LOADED,
     FAILED,
     COMPLETED
 }
@@ -36,17 +38,18 @@ class PixabayDataSource(private val  context: Context): PageKeyedDataSource<Int,
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, PhotoItem>
     ) {
+        retry = null
 
-        _networkStatus.postValue(NetworkStatus.LOADING)
+        _networkStatus.postValue(NetworkStatus.INITIAL_LOADING)
 
         val  url = "https://pixabay.com/api/?key=23746904-f6213ab4af145089d76127203&image_type=photo&pretty=true&q=${queryKey}&per_page=50&page=1"
         StringRequest(
             Request.Method.GET,
             url,
             Response.Listener {
-                retry = null
                 val dataList = Gson().fromJson(it, Pixabay::class.java).hits.toList()
                 callback.onResult(dataList, null, 2)
+                _networkStatus.postValue(NetworkStatus.LOADED)
             },
             Response.ErrorListener {
                 retry = {loadInitial(params, callback)}
@@ -60,6 +63,7 @@ class PixabayDataSource(private val  context: Context): PageKeyedDataSource<Int,
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, PhotoItem>) {
+        retry = null
 
         _networkStatus.postValue(NetworkStatus.LOADING)
 
@@ -69,12 +73,12 @@ class PixabayDataSource(private val  context: Context): PageKeyedDataSource<Int,
             Request.Method.GET,
             url,
             Response.Listener {
-                retry = null
                 val dataList = Gson().fromJson(it, Pixabay::class.java).hits.toList()
                 callback.onResult(dataList, params.key + 1)
+                _networkStatus.postValue(NetworkStatus.LOADED)
             },
             Response.ErrorListener {
-                if (it.toString() == "loadAfter: com.android.volley.ClientError") {
+                if (it.toString() == "com.android.volley.ClientError") {
                     _networkStatus.postValue(NetworkStatus.COMPLETED)
                 } else {
                     retry = {loadAfter(params, callback)}

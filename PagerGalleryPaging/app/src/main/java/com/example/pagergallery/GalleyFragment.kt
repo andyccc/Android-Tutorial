@@ -5,6 +5,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +26,7 @@ class GalleyFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private  val galleryViewModel by viewModels<GalleryViewModel> ()
+    private  val galleryViewModel by activityViewModels<GalleryViewModel> ()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,11 +93,10 @@ class GalleyFragment : Fragment() {
         setHasOptionsMenu(true)
 
 
-        val galleryAdapter = GalleryAdapter(null)
+        val galleryAdapter = GalleryAdapter(galleryViewModel)
 
         galleryViewModel.pagedListLiveData.observe(viewLifecycleOwner, Observer {
             galleryAdapter.submitList(it)
-            swipeRefresh.isRefreshing = false
 
         })
 
@@ -113,8 +113,8 @@ class GalleyFragment : Fragment() {
 
         galleryViewModel.networkStatus.observe(viewLifecycleOwner, Observer {
             Log.d("mytag", "onActivityCreated: $it")
-
-
+            galleryAdapter.updateNetworkStatus(it)
+            swipeRefresh.isRefreshing = it == NetworkStatus.INITIAL_LOADING
 
         })
 

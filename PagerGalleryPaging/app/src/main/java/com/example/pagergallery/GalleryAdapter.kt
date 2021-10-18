@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
@@ -19,91 +18,108 @@ import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.gallery_cell.view.*
 import kotlinx.android.synthetic.main.gallery_footer.view.*
 
-class GalleryAdapter(val galleryViewModel: GalleryViewModel?) : PagedListAdapter<PhotoItem, MyViewHolder>(DIFFCALLBACk) {
+class GalleryAdapter(val galleryViewModel: GalleryViewModel) : PagedListAdapter<PhotoItem, RecyclerView.ViewHolder>(DIFFCALLBACk) {
 
-    companion object {
-        const val NORMAL_VIEW_TYPE = 0
-        const val FOOTER_VIEW_TYPE = 1
+    init {
+        galleryViewModel.retry()
     }
 
-    var footerViewStatus = DATA_STATUS_CAN_LOAD_MORE
+    private var hasFooter = false
+    private var networkStatus: NetworkStatus? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val holder: MyViewHolder
-        if (viewType == NORMAL_VIEW_TYPE) {
-            holder = MyViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.gallery_cell, parent, false)
-            )
-            holder.itemView.setOnClickListener {
-                Bundle().apply {
-                    putParcelableArrayList("PHOTO_LIST", ArrayList(currentList))
-                    putInt("PHOTO_POSITION", holder.adapterPosition)
-                    holder.itemView.findNavController()
-                        .navigate(R.id.action_galleyFragment_to_pagerPhotoFragment, this);
-                }
+    fun updateNetworkStatus(networkStatus: NetworkStatus?) {
+        this.networkStatus = networkStatus
+        if (networkStatus == NetworkStatus.INITIAL_LOADING) hideFooter() else showFooter()
 
-            }
+    }
+
+    private fun hideFooter() {
+        if (hasFooter) {
+            notifyItemRemoved(itemCount - 1)
+        }
+        hasFooter = false
+    }
+
+    private fun showFooter() {
+        if (hasFooter ) {
+            notifyItemChanged(itemCount - 1)
         } else {
-            holder = MyViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.gallery_footer, parent, false)
-                    .also {
-                        (it.layoutParams as StaggeredGridLayoutManager.LayoutParams).isFullSpan = true
-                        it.setOnClickListener{itemView ->
-                            itemView.progressBar.visibility = View.VISIBLE
-                            itemView.textView.text = "正在加载"
-//                            galleryViewModel.fectchData()
+            hasFooter = true
+            notifyItemInserted(itemCount - 1)
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        when (viewType) {
+            R.layout.gallery_cell -> {
+                return PhotoViewHolder.newInstance(parent).also { holder ->
+                    holder.itemView.setOnClickListener {
+                        Bundle().apply {
+                            putInt("PHOTO_POSITION", holder.adapterPosition)
+                            holder.itemView.findNavController()
+                                .navigate(R.id.action_galleyFragment_to_pagerPhotoFragment, this);
                         }
                     }
-            )
-
+                }
+            }
+            else -> {
+                return FooterViewHolder.newInstance(parent).also {
+                    (it.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams).isFullSpan = true
+                    it.itemView.setOnClickListener{itemView ->
+                        itemView.progressBar.visibility = View.VISIBLE
+                        itemView.textView.text = "正在加载"
+                        galleryViewModel?.retry()
+                    }
+                }
+            }
         }
-
-//        holder.itemView.setOnLongClickListener {
-//
-//        }
-
-        return holder
     }
 
     override fun getItemCount(): Int {
-        return super.getItemCount() + 1
+        return super.getItemCount() + if (hasFooter ) 1 else 0
     }
 
     override fun getItemViewType(position: Int): Int {
+        return if (hasFooter && position == itemCount - 1) R.layout.gallery_footer else R.layout.gallery_cell
+    }
 
-        return if (position == itemCount - 1) FOOTER_VIEW_TYPE else NORMAL_VIEW_TYPE
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder.itemViewType) {
+            R.layout.gallery_footer -> {
+                networkStatus?.let { (holder as FooterViewHolder).bindWithNetworkStatus(it) }
+            }
+            else -> {
+                val photoItem = getItem(position) ?: return
+                (holder as PhotoViewHolder).bindWithPhotoItem(photoItem)
+            }
+        }
+    }
+
+    object DIFFCALLBACk : DiffUtil.ItemCallback<PhotoItem>() {
+        override fun areItemsTheSame(oldItem: PhotoItem, newItem: PhotoItem): Boolean {
+            return oldItem.photoId == newItem.photoId
+        }
+
+        override fun areContentsTheSame(oldItem: PhotoItem, newItem: PhotoItem): Boolean {
+            return oldItem == newItem
+        }
 
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        if (position == itemCount - 1) {
-            // 这个是footer
-            with(holder.itemView) {
-                when(footerViewStatus) {
-                    DATA_STATUS_CAN_LOAD_MORE -> {
-                        progressBar.visibility = View.VISIBLE
-                        textView.text = "正在加载"
-                        isClickable = false
-                    }
-                    DATA_STATUS_NO_MORE -> {
-                        progressBar.visibility = View.GONE
-                        textView.text = "全部加载完毕"
-                        isClickable = false
-                    }
-                    DATA_STATUS_NETWORK_ERROR -> {
-                        progressBar.visibility = View.GONE
-                        textView.text = "网络故障，点击重试"
-                        isClickable = true
-                    }
-                }
-            }
+}
 
-
-            return
+class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    companion object {
+        fun newInstance(parent: ViewGroup): PhotoViewHolder {
+            var view = LayoutInflater.from(parent.context).inflate(R.layout.gallery_cell, parent, false)
+            return PhotoViewHolder(view)
         }
 
-        val photoItem = getItem(position) ?: return
-        with(holder.itemView) {
+    }
+
+    fun bindWithPhotoItem(photoItem: PhotoItem) {
+
+        with(itemView) {
             shimmer.apply {
                 setShimmerColor(0x55FFFFFF)
                 setShimmerAngle(0)
@@ -117,9 +133,7 @@ class GalleryAdapter(val galleryViewModel: GalleryViewModel?) : PagedListAdapter
             imageView.layoutParams.height = photoItem.photoHeight
         }
 
-
-
-        Glide.with(holder.itemView).load(photoItem.previewUrl)
+        Glide.with(itemView).load(photoItem.previewUrl)
             .placeholder(R.drawable.photo_placeholder)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
@@ -139,25 +153,49 @@ class GalleryAdapter(val galleryViewModel: GalleryViewModel?) : PagedListAdapter
                     isFirstResource: Boolean
                 ): Boolean {
                     return false.also {
-                        holder.itemView.shimmer?.stopShimmerAnimation()
+                        itemView.shimmer?.stopShimmerAnimation()
                     }
                 }
 
             })
-            .into(holder.itemView.imageView)
-    }
-
-    object DIFFCALLBACk : DiffUtil.ItemCallback<PhotoItem>() {
-        override fun areItemsTheSame(oldItem: PhotoItem, newItem: PhotoItem): Boolean {
-            return oldItem.photoId == newItem.photoId
-        }
-
-        override fun areContentsTheSame(oldItem: PhotoItem, newItem: PhotoItem): Boolean {
-            return oldItem == newItem
-        }
-
+            .into(itemView.imageView)
     }
 
 }
+class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    companion object {
+        fun newInstance(parent: ViewGroup): FooterViewHolder {
+            var view = LayoutInflater.from(parent.context).inflate(R.layout.gallery_footer, parent, false)
+            return FooterViewHolder(view)
+        }
+    }
 
-class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    fun bindWithNetworkStatus(networkStatus: NetworkStatus) {
+        with(itemView) {
+            when(networkStatus) {
+                NetworkStatus.FAILED -> {
+                    textView.text = "点击重试"
+                    progressBar.visibility = View.GONE
+                    isClickable = true
+                }
+
+                NetworkStatus.COMPLETED -> {
+                    textView.text ="加载完毕"
+                    progressBar.visibility =View.GONE
+                    isClickable = false
+                }
+
+                else -> {
+                    textView.text = "正在加载"
+                    progressBar.visibility = View.VISIBLE
+                    isClickable = false
+                }
+
+            }
+        }
+
+    }
+
+
+
+}

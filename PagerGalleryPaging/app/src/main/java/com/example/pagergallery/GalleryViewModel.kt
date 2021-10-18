@@ -13,11 +13,6 @@ import com.android.volley.toolbox.StringRequest
 import com.google.gson.Gson
 import kotlin.math.ceil
 
-const val DATA_STATUS_CAN_LOAD_MORE = 0
-const val DATA_STATUS_NO_MORE = 1
-const val DATA_STATUS_NETWORK_ERROR = 2
-
-
 class GalleryViewModel(application: Application) : AndroidViewModel(application) {
     private val factory = PixabayDataSourceFactory(application)
     val pagedListLiveData = factory.toLiveData(1)
