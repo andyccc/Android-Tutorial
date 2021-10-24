@@ -2,4 +2,14 @@
     <string name="app_name">DrawerDemo</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_fragment_title">Text</string>
+    <string name="list_fragment_title">List</string>
+    <string name="pager_fragment_title">Pager</string>
+    <string name="navigation_view_header_title">Drawer Header</string>
+    <string name="placeholder_text">
+        真子公主生日之际，日本宫内厅发布了她和妹妹佳子公主散步的视频。这段视频拍摄于10月6日，生日当天，真子公主没有进行任何评论。日本皇室女性成员嫁给平民后自动脱离皇籍，这意味着10月23日是真子身为公主度过的最后一个生日。
+        生日过后3天，即10月26日，真子公主将与男友小室圭完婚。真子与小室圭是大学同学，他们原定2018年11月举办婚礼。然而，两人订婚的消息发布后不久，就有多家媒体爆料，小室的母亲欠前未婚夫数百万日元，其中包括小室的学费。真子和小室的婚礼因此被迫推迟，小室随后赴美留学。
+        日本皇室女性成员结婚时，会得到由国家支付的一笔一次性补贴，最多大约1.5亿日元，约合人民币880万元。不过，考虑到小室圭家庭的债务纠纷，真子公主拒绝接受这笔礼金；日本政府负责皇室事务的宫内厅也表示不会为两人举办皇族传统结婚仪式。
+        小室目前就职于美国纽约的一家律师事务所，他和真子完婚后将率先返回美国。办理完相关手续后，真子也将前往美国，她婚后将拥有姓氏，改名为小室真子。
+    </string>
 </resources>
