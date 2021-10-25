@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.content_layout.*
 import kotlinx.android.synthetic.main.fragment_list.*
 
@@ -65,8 +66,10 @@ class ListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val  layoutManager = GridLayoutManager(requireContext() ,2)
+//        val layoutManager = GridLayoutManager(requireContext() ,2)
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         val adapter = MyListAdapter(false)
+        recyclerView.isNestedScrollingEnabled = false
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         adapter.submitList(iconsList())
@@ -74,6 +77,8 @@ class ListFragment : Fragment() {
 
 
     }
+
+
 
 
 

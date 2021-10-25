@@ -8,9 +8,11 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/textViewText2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
+        android:scrollbars="vertical"
         android:text="@string/placeholder_text"
         android:textColor="@color/white"
         android:textSize="24sp" />
