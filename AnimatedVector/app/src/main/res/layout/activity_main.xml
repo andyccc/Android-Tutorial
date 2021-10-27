@@ -15,6 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/my_animated_vector"
-        app:lottie_rawRes="@raw/star-loader.json"
+        app:lottie_rawRes="@raw/star_loader"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
