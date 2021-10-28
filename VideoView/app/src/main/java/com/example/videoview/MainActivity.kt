@@ -48,7 +48,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun videoPlay2() {
-        val videoPath = "android.resource://$packageName/${R.raw.testhtml5}"
+//        val videoPath = "android.resource://$packageName/${R.raw.testhtml5}"
+        val videoPath = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
         videoView.setVideoPath(videoPath)
         videoView.setOnPreparedListener {
 
