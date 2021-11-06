@@ -154,7 +154,7 @@ class MyView @JvmOverloads constructor(
 
     private fun drawVector(canvas: Canvas) {
         canvas.withTranslation(mWidth/2, mHeight /4*3) {
-            withRotation(mAngle) {
+            withRotation(-mAngle) {
                 drawLine(0f,0f,mRadius,0f, vectorLinePaint)
             }
         }
@@ -173,10 +173,9 @@ class MyView @JvmOverloads constructor(
             val x = mRadius * cos(mAngle.toRadians())
             val y = mRadius * sin(mAngle.toRadians())
             withTranslation(x ,-y) {
-                drawLine(0f,0f, 0f, y, solidLinePaint)
-                drawLine(0f,0f, 0f,-mHeight/4 + y, dashedLinePaint)
+//                drawLine(0f,0f, 0f, y, solidLinePaint)
+//                drawLine(0f,0f, 0f,-mHeight/4 + y, dashedLinePaint)
             }
-
         }
 
     }
