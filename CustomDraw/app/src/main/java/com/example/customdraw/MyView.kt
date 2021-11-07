@@ -47,7 +47,7 @@ class MyView @JvmOverloads constructor(
         .apply {
             style = Paint.Style.STROKE
             strokeWidth = 5f
-            color = ContextCompat.getColor(context,R.color.teal_700)
+            color = ContextCompat.getColor(context, R.color.teal_700)
         }
 
 
@@ -59,7 +59,7 @@ class MyView @JvmOverloads constructor(
 
     private val dashedLinePaint = Paint().apply {
         style = Paint.Style.STROKE
-        pathEffect = DashPathEffect(floatArrayOf(10f,10f), 0f)
+        pathEffect = DashPathEffect(floatArrayOf(10f, 10f), 0f)
         color = ContextCompat.getColor(context, R.color.colorYellow)
         strokeWidth = 5f
     }
@@ -110,9 +110,9 @@ class MyView @JvmOverloads constructor(
         mWidth = w.toFloat()
         mHeight = h.toFloat()
 
-        mRadius = if (w < h) w/2.toFloat() else h / 4.toFloat()
+        mRadius = if (w < h) w / 2.toFloat() else h / 4.toFloat()
 
-        mRadius = if (mRadius <  h / 4)  mRadius else h / 4.toFloat()
+        mRadius = if (mRadius < h / 4) mRadius else h / 4.toFloat()
 
         mRadius -= 20f
 
@@ -140,48 +140,56 @@ class MyView @JvmOverloads constructor(
 
     private fun drawLabel(canvas: Canvas) {
         canvas.apply {
-            drawRect(50f,50f,300f,120f,solidLinePaint)
-            drawText("指数函数与旋转矢量",60f,100f, textPaint)
+            drawRect(50f, 50f, 300f, 120f, solidLinePaint)
+            drawText("指数函数与旋转矢量", 60f, 100f, textPaint)
         }
     }
 
     private fun drawDashedCircle(canvas: Canvas) {
-        canvas.withTranslation(mWidth/2, mHeight /4*3) {
-            drawCircle(0f,0f,mRadius, dashedLinePaint)
+        canvas.withTranslation(mWidth / 2, mHeight / 4 * 3) {
+            drawCircle(0f, 0f, mRadius, dashedLinePaint)
 
         }
     }
 
     private fun drawVector(canvas: Canvas) {
-        canvas.withTranslation(mWidth/2, mHeight /4*3) {
+        canvas.withTranslation(mWidth / 2, mHeight / 4 * 3) {
             withRotation(-mAngle) {
-                drawLine(0f,0f,mRadius,0f, vectorLinePaint)
+                drawLine(0f, 0f, mRadius, 0f, vectorLinePaint)
             }
         }
     }
 
     private fun drawProjections(canvas: Canvas) {
-        canvas.withTranslation(mWidth/2, mHeight / 2) {
-            drawCircle(mRadius * cos(mAngle.toRadians()), 0f,10f, fillCirclePaint)
+        canvas.withTranslation(mWidth / 2, mHeight / 2) {
+            drawCircle(mRadius * cos(mAngle.toRadians()), 0f, 10f, fillCirclePaint)
         }
 
-        canvas.withTranslation(mWidth/2, mHeight / 4 *3) {
-            drawCircle(mRadius * cos(mAngle.toRadians()), 0f,10f, fillCirclePaint)
+        canvas.withTranslation(mWidth / 2, mHeight / 4 * 3) {
+            drawCircle(mRadius * cos(mAngle.toRadians()), 0f, 10f, fillCirclePaint)
         }
 
-        canvas.withTranslation(mWidth/2, mHeight /4 * 3) {
+        canvas.withTranslation(mWidth / 2, mHeight / 4 * 3) {
             val x = mRadius * cos(mAngle.toRadians())
             val y = mRadius * sin(mAngle.toRadians())
-            withTranslation(x ,-y) {
-//                drawLine(0f,0f, 0f, y, solidLinePaint)
-//                drawLine(0f,0f, 0f,-mHeight/4 + y, dashedLinePaint)
+            withTranslation(x, -y) {
+                drawLine(0f, 0f, 0f, y, solidLinePaint)
+//                drawLine(0f, 0f, 0f, -mHeight / 4 + y, dashedLinePaint)
+
+                // 解决 drawLine 无法画虚线问题，采用drawPath 替代
+                val path = Path().apply {
+                    moveTo(0f, 0f)
+                    lineTo(0f, -mHeight / 4 + y)
+                }
+
+                drawPath(path,  dashedLinePaint)
             }
         }
 
     }
 
     private fun drawSineWave(canvas: Canvas) {
-        canvas.withTranslation(mWidth / 2, mHeight /2) {
+        canvas.withTranslation(mWidth / 2, mHeight / 2) {
             val sampleCount = 50
             val dy = mHeight / 2 / sampleCount
 
@@ -190,7 +198,7 @@ class MyView @JvmOverloads constructor(
             repeat(sampleCount) {
                 val x = mRadius * cos(it * -0.15 + mAngle.toRadians())
                 val y = -dy * it
-                sineWaveSamplsPath.quadTo(x.toFloat(), y ,x.toFloat(), y)
+                sineWaveSamplsPath.quadTo(x.toFloat(), y, x.toFloat(), y)
             }
             drawPath(sineWaveSamplsPath, vectorLinePaint)
             drawTextOnPath("hello", sineWaveSamplsPath, 1000f, 0f, textPaint)
@@ -210,14 +218,12 @@ class MyView @JvmOverloads constructor(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun pauseRotationg(){
+    fun pauseRotationg() {
         rotatingJob?.cancel()
 
     }
 
     fun Float.toRadians() = this / 180 * PI.toFloat()
-
-
 
 
 }
