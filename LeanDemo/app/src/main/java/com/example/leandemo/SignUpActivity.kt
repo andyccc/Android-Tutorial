@@ -1,5 +1,6 @@
 package com.example.leandemo
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -28,8 +29,8 @@ class SignUpActivity : AppCompatActivity() {
         editTextRegisterPassword.addTextChangedListener(watcher)
         progressBarRegister.visibility = View.INVISIBLE
         buttonRegister.setOnClickListener {
-            val name = editTextRegisterUsername.text?.trim().toString()
-            val pwd = editTextRegisterPassword.text?.trim().toString()
+            val name = editTextRegisterUsername.text?.toString()?.trim()
+            val pwd = editTextRegisterPassword.text?.toString()?.trim()
             val user = LCUser().apply {
                 progressBarRegister.visibility = View.VISIBLE
 
@@ -42,7 +43,11 @@ class SignUpActivity : AppCompatActivity() {
 
                     override fun onNext(t: LCUser) {
                         Toast.makeText(this@SignUpActivity, "注册成功", Toast.LENGTH_SHORT).show()
-                        loginAction(name, pwd)
+                        name?.let {
+                            pwd?.let {
+                                loginAction(name, pwd)
+                            }
+                        }
                     }
 
                     override fun onError(e: Throwable) {
@@ -70,10 +75,9 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onNext(t: LCUser) {
                 startActivity(Intent(this@SignUpActivity, MainActivity::class.java).also {
-                    it.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    it.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK // 不让退回
                 })
                 finish()
-
             }
 
             override fun onError(e: Throwable) {
