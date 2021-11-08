@@ -76,7 +76,7 @@ class LoginActivity : AppCompatActivity() {
 
             override fun onError(e: Throwable) {
                 progressBarLogin.visibility = View.INVISIBLE
-                Toast.makeText(this@LoginActivity, "${e.message}", Toast.LENGTH_SHORT)
+                Toast.makeText(this@LoginActivity, "${e.message}", Toast.LENGTH_SHORT).show()
             }
 
             override fun onComplete() {

@@ -82,7 +82,7 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onError(e: Throwable) {
                 progressBarRegister.visibility = View.INVISIBLE
-                Toast.makeText(this@SignUpActivity, "${e.message}", Toast.LENGTH_SHORT)
+                Toast.makeText(this@SignUpActivity, "${e.message}", Toast.LENGTH_SHORT).show()
             }
 
             override fun onComplete() {

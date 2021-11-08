@@ -15,6 +15,7 @@ class MyApplication: Application() {
         LeanCloud.initialize(this, "YaKud16hyA4QIyBGJvogUSEq-gzGzoHsz", "MKE9fN9XQc5tcG6KIFk5eQ59", "https://yakud16h.lc-cn-n1-shared.com");
 
 
+        // 测试代码
 //        val testObject = LCObject("TestObject")
 //        testObject.put("words", "Hello world!")
 //        testObject.saveInBackground().blockingSubscribe()
